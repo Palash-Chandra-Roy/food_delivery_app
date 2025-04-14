@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/Screen/BotomNavBar/bottom_nav_bar.dart';
+import 'package:food_delivery_app/Screen/Singup/singup.dart';
 import 'package:get/get.dart';
 
 void main() {
@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:
-          //OrderDetails(),
-          BottomNavBar(),
+      home: Singup(),
+      //OrderDetails(),
+      // BottomNavBar(),
       // HomeScreen(),
       // OnbordingScreen(),
     );

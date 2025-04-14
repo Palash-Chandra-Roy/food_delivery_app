@@ -35,7 +35,15 @@ class AppWidget {
 
   static TextStyle priceTextFeildStyle() {
     return TextStyle(
-      color: Colors.black38,
+      color: Colors.black,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  static TextStyle signUpTextFeildStyle() {
+    return TextStyle(
+      color: Colors.black,
       fontSize: 20,
       fontWeight: FontWeight.bold,
     );
