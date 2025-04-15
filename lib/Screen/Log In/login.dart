@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/Screen/Singup/singup.dart';
 import 'package:food_delivery_app/Service/widget_support.dart';
 import 'package:get/get.dart';
+
+import '../BotomNavBar/bottom_nav_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,6 +14,50 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String email = "", password = ""; //, name = "";
+  //TextEditingController nameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+
+  uaerLogin() async {
+    if (password.isNotEmpty &&
+        // nameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        Get.to(BottomNavBar());
+      } on FirebaseAuthException catch (e) {
+        if (e.code == "user-not-found") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.black,
+              content: Text(
+                "Password Provided is too weak",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          );
+        } else {
+          if (e.code == "Wrong-password") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.black,
+                content: Text(
+                  "Wrong Password Provided by User",
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,6 +129,7 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Email",
@@ -98,6 +146,7 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
+                          controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -119,16 +168,25 @@ class _LoginState extends State<Login> {
                       ),
                       SizedBox(height: 30),
                       Center(
-                        child: Container(
-                          height: 50,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Color(0xffef2b39),
-                          ),
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: () {},
+                        child: GestureDetector(
+                          onTap: () {
+                            if (emailController.text.isNotEmpty &&
+                                passwordController.text.isNotEmpty) {
+                              setState(() {
+                                email = emailController.text;
+                                password = passwordController.text;
+                              });
+                              uaerLogin();
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color(0xffef2b39),
+                            ),
+                            child: Center(
                               child: Text(
                                 "Log In",
                                 style: AppWidget.whiteTextFeildStyle(),

@@ -1,7 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/Screen/BotomNavBar/bottom_nav_bar.dart';
 import 'package:food_delivery_app/Screen/Log%20In/login.dart';
+import 'package:food_delivery_app/Service/database.dart';
+import 'package:food_delivery_app/Service/shared_pref.dart';
 import 'package:food_delivery_app/Service/widget_support.dart';
 import 'package:get/get.dart';
+import 'package:random_string/random_string.dart';
 
 class Singup extends StatefulWidget {
   const Singup({super.key});
@@ -11,6 +16,67 @@ class Singup extends StatefulWidget {
 }
 
 class _SingupState extends State<Singup> {
+  String email = "", password = "", name = "";
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+
+  // final AuthController authController = Get.find<AuthController>();
+  registration() async {
+    if (password.isNotEmpty &&
+        nameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        String id = randomAlphaNumeric(10);
+        Map<String, dynamic> userInfoMap = {
+          " Name": nameController.text,
+          "Email": emailController.text,
+          " Id": id,
+        };
+        await SharedpreferenceHelper().saveUserEmail(email);
+        await SharedpreferenceHelper().saveUserName(name);
+        await DatebaseMethods().addUserDetails(userInfoMap, id);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              "Registered Successfully",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+        Get.to(BottomNavBar());
+      } on FirebaseException catch (e) {
+        if (e.code == "weak-password") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              content: Text(
+                "Password Provided is too weak",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          );
+        } else {
+          if (e.code == "email-already-in-use") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.orangeAccent,
+                content: Text(
+                  "Account Already exists",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +147,7 @@ class _SingupState extends State<Singup> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
+                          controller: nameController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter name",
@@ -98,6 +165,7 @@ class _SingupState extends State<Singup> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Email",
@@ -115,6 +183,7 @@ class _SingupState extends State<Singup> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
+                          controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -134,7 +203,19 @@ class _SingupState extends State<Singup> {
                           ),
                           child: Center(
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                if (nameController.text.isNotEmpty &&
+                                    emailController.text.isNotEmpty &&
+                                    passwordController.text.isNotEmpty) {
+                                  setState(() {
+                                    name = nameController.text;
+                                    email = emailController.text;
+                                    password = passwordController.text;
+                                  });
+
+                                  registration();
+                                }
+                              },
                               child: Text(
                                 "Sign Up",
                                 style: AppWidget.whiteTextFeildStyle(),
