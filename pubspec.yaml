@@ -42,6 +42,8 @@ dependencies:
   firebase_core:
   random_string:
   shared_preferences:
+  flutter_stripe:
+  http:
 
 dev_dependencies:
   flutter_test:

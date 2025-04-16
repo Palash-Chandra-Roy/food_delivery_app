@@ -22,22 +22,23 @@ class _SingupState extends State<Singup> {
   TextEditingController passwordController = new TextEditingController();
 
   // final AuthController authController = Get.find<AuthController>();
-  registration() async {
+  void registration() async {
     if (password.isNotEmpty &&
         nameController.text.isNotEmpty &&
         emailController.text.isNotEmpty) {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
-        String id = randomAlphaNumeric(10);
+        String Id = randomAlphaNumeric(10);
         Map<String, dynamic> userInfoMap = {
           " Name": nameController.text,
           "Email": emailController.text,
-          " Id": id,
+          " Id": Id,
         };
         await SharedpreferenceHelper().saveUserEmail(email);
         await SharedpreferenceHelper().saveUserName(name);
-        await DatebaseMethods().addUserDetails(userInfoMap, id);
+        await SharedpreferenceHelper().saveUserId(Id);
+        await DatebaseMethods().addUserDetails(userInfoMap, Id);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -68,6 +69,16 @@ class _SingupState extends State<Singup> {
                 content: Text(
                   "Account Already exists",
                   style: TextStyle(fontSize: 18),
+                ),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.orangeAccent,
+                content: Text(
+                  "SignUp failed: ${e.message}",
+                  style: TextStyle(fontSize: 18, color: Colors.black),
                 ),
               ),
             );

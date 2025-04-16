@@ -14,46 +14,49 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String email = "", password = ""; //, name = "";
-  //TextEditingController nameController = new TextEditingController();
+  String? email = "", password = "";
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  uaerLogin() async {
-    if (password.isNotEmpty &&
-        // nameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty) {
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+  void uaerLogin() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email!,
+        password: password!,
+      );
 
-        Get.to(BottomNavBar());
-      } on FirebaseAuthException catch (e) {
-        if (e.code == "user-not-found") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.black,
-              content: Text(
-                "Password Provided is too weak",
-                style: TextStyle(fontSize: 18),
-              ),
+      Get.to(BottomNavBar());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(
+              "Password Provided is too weak",
+              style: TextStyle(fontSize: 18, color: Colors.black),
             ),
-          );
-        } else {
-          if (e.code == "Wrong-password") {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.black,
-                content: Text(
-                  "Wrong Password Provided by User",
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                ),
-              ),
-            );
-          }
-        }
+          ),
+        );
+      } else if (e.code == "Wrong-password") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(
+              "Wrong Password Provided by User",
+              style: TextStyle(fontSize: 18, color: Colors.black),
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(
+              "Login failed: ${e.message}",
+              style: TextStyle(fontSize: 18, color: Colors.black),
+            ),
+          ),
+        );
       }
     }
   }
