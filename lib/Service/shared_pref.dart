@@ -1,11 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedpreferenceHelper {
-  static String userIdKey = "USERKEY";
-  static String userNameKey = "USERNAMEKEY";
-  static String userEmailKey = "USEREMAILKEY";
-  static String userImageKey = "USERIMAGEKEY";
+class SharedPreferenceHelper {
+  static const String userIdKey = "USERIDKEY";
+  static const String userNameKey = "USERNAMEKEY";
+  static const String userEmailKey = "USEREMAILKEY";
+  static const String userImageKey = "USERIMAGEKEY";
+  static const String userAddressKey = "USERADDRESSKEY";
 
+  //Save User Sytem ;
   Future<bool> saveUserId(String getUserId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.setString(userIdKey, getUserId);
@@ -18,14 +20,20 @@ class SharedpreferenceHelper {
 
   Future<bool> saveUserEmail(String getUserEmail) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    return pref.setString(userIdKey, getUserEmail);
+    return pref.setString(userEmailKey, getUserEmail);
   }
 
   Future<bool> saveUserImage(String getUserImage) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    return pref.setString(userNameKey, getUserImage);
+    return pref.setString(userImageKey, getUserImage);
   }
 
+  Future<bool> saveUserAddress(String getUserAddress) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.setString(userAddressKey, getUserAddress);
+  }
+
+  //GetUser System
   Future<String?> getUserId() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString(userIdKey);
@@ -44,5 +52,10 @@ class SharedpreferenceHelper {
   Future<String?> getUserImage() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString(userImageKey);
+  }
+
+  Future<String?> getUuserAddress() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString(userAddressKey);
   }
 }

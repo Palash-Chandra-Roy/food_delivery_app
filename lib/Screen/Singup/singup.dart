@@ -30,14 +30,17 @@ class _SingupState extends State<Singup> {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
         String Id = randomAlphaNumeric(10);
+
         Map<String, dynamic> userInfoMap = {
           " Name": nameController.text,
           "Email": emailController.text,
+
           " Id": Id,
         };
-        await SharedpreferenceHelper().saveUserEmail(email);
-        await SharedpreferenceHelper().saveUserName(name);
-        await SharedpreferenceHelper().saveUserId(Id);
+        await SharedPreferenceHelper().saveUserEmail(email);
+        await SharedPreferenceHelper().saveUserName(name);
+        await SharedPreferenceHelper().saveUserId(Id);
+
         await DatebaseMethods().addUserDetails(userInfoMap, Id);
 
         ScaffoldMessenger.of(context).showSnackBar(

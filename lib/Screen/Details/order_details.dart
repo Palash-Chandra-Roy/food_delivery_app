@@ -27,15 +27,22 @@ class OrderDetails extends StatefulWidget {
 }
 
 class _OrderDetailsState extends State<OrderDetails> {
+  TextEditingController addressController = new TextEditingController();
   Map<String, dynamic>? paymentIntent;
-  String? name, id, email;
+  String? name, id, email, address;
   int quantity = 1;
   int totalPrice = 0;
 
   getthesharedpref() async {
-    name = await SharedpreferenceHelper().getUserName();
-    id = await SharedpreferenceHelper().getUserId();
-    email = await SharedpreferenceHelper().getUserEmail();
+    name = await SharedPreferenceHelper().getUserName();
+    id = await SharedPreferenceHelper().getUserId();
+    email = await SharedPreferenceHelper().getUserEmail();
+    address = await SharedPreferenceHelper().getUuserAddress();
+    print(name);
+    print(id);
+    print(address);
+    print(email);
+
     setState(() {});
   }
 
@@ -174,7 +181,11 @@ class _OrderDetailsState extends State<OrderDetails> {
                   SizedBox(width: 30),
                   GestureDetector(
                     onTap: () {
-                      makePayment(totalPrice.toString());
+                      if (address == null) {
+                        OpenBox();
+                      } else {
+                        makePayment(totalPrice.toString());
+                      }
                     },
                     child: Material(
                       elevation: 3,
@@ -205,28 +216,55 @@ class _OrderDetailsState extends State<OrderDetails> {
     );
   }
 
-  makePayment(String amount) async {
+  /*
+  Future<void> makePayment(String amount) async {
+    try {
+      paymentIntent = await createPaymentIntent(amount, "USD");
+
+      if (paymentIntent != null && paymentIntent!['client_secret'] != null) {
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: paymentIntent!['client_secret'],
+            style: ThemeMode.dark,
+            merchantDisplayName: 'Foodie Delivery',
+          ),
+        );
+        displayPaymentSheet(amount);
+        // পেমেন্ট সফল হলে অর্ডার প্রসেস করুন
+        await Stripe.instance.presentPaymentSheet();
+        print('Payment successful!');
+      } else {
+        //পেমেন্ট ইন্টেন্ট তৈরি করতে ব্যর্থ হয়েছে।
+        print('Error');
+      }
+    } catch (e) {
+      print('Exception: $e');
+    }
+  }
+
+  */
+  Future<void> makePayment(String amount) async {
     try {
       paymentIntent = await createPaymentIntent(amount, "USD");
       await Stripe.instance
           .initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: "clientSecret",
+              paymentIntentClientSecret: paymentIntent?["client_secret"],
+              //  paymentIntentClientSecret: "clientSecret",
               style: ThemeMode.dark,
-              merchantDisplayName: 'Foodie Delivery',
+              merchantDisplayName: 'Palash',
             ),
           )
           .then((value) {});
       displayPaymentSheet(amount);
-
-      await Stripe.instance.presentPaymentSheet();
+      //await Stripe.instance.presentPaymentSheet();
       print('Payment successful!');
     } catch (e, s) {
-      print('Exception:$e $e');
+      print('Exception:$e $s');
     }
   }
 
-  displayPaymentSheet(String amount) async {
+  Future<void> displayPaymentSheet(String amount) async {
     try {
       await Stripe.instance
           .presentPaymentSheet()
@@ -242,6 +280,7 @@ class _OrderDetailsState extends State<OrderDetails> {
               "FoodName": widget.name,
               "FoodImage": widget.image,
               "Status": "Pending ",
+              "Address": address ?? addressController.text,
             };
 
             await DatebaseMethods().addUserOrderDetails(
@@ -325,4 +364,96 @@ class _OrderDetailsState extends State<OrderDetails> {
     final calculatedAmount = (int.parse(amount) * 100);
     return calculatedAmount.toString();
   }
+
+  Future OpenBox() => showDialog(
+    context: context,
+    builder:
+        (context) => AlertDialog(
+          content: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(Icons.cancel),
+                      ),
+                      SizedBox(width: 30),
+                      Text(
+                        " Add the Address",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff008080),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text("Add Address"),
+                  SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black38, width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: addressController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: " Address",
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () async {
+                      await SharedPreferenceHelper().saveUserAddress(
+                        SharedPreferenceHelper.userAddressKey,
+                      );
+                      Navigator.pop(context);
+                    },
+
+                    // child: Center(
+                    //   child: Container(
+                    //     width: 100,
+                    //     padding: EdgeInsets.all(20),
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       color: Color(0xff008080),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Add ",
+                    //         style: TextStyle(fontSize: 18, color: Colors.white),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(
+                            0xff008080,
+                          ), // Change to any color you like
+                        ),
+
+                        child: Text(
+                          "Add ",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+  );
 }

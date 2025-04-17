@@ -21,7 +21,7 @@ android {
 
 
     kotlinOptions {
-        jvmTarget ="23"
+        jvmTarget ="21"
         //jvmTarget = JavaVersion.VERSION_21.toString()
     }
 
