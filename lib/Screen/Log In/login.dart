@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/Admin/admin_login.dart';
 import 'package:food_delivery_app/Screen/Singup/singup.dart';
 import 'package:food_delivery_app/Service/widget_support.dart';
 import 'package:get/get.dart';
@@ -163,9 +164,14 @@ class _LoginState extends State<Login> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            "Forget Password?",
-                            style: AppWidget.boldTextFeildStyle(),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(AdminLogin());
+                            },
+                            child: Text(
+                              "Forget Password?",
+                              style: AppWidget.boldTextFeildStyle(),
+                            ),
                           ),
                         ],
                       ),

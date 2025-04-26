@@ -15,6 +15,7 @@ List<PizzaModel> getPizza() {
   pizzaModel.price = "\$70";
   pizza.add(pizzaModel);
   pizzaModel = new PizzaModel();
+
   pizzaModel.name = "Chince Pizza";
   pizzaModel.image = "assets/images/chincepizza.png";
   pizzaModel.price = "\$50";

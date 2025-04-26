@@ -51,4 +51,26 @@ class DatabaseMethods {
       "Wallet": amount,
     });
   }
+
+  Future<Stream<QuerySnapshot>> getAdminOrders() async {
+    return await FirebaseFirestore.instance
+        .collection("Orders")
+        .where("Status", isEqualTo: "Pending")
+        .snapshots();
+  }
+
+  Future updateAdminOrders(String id) async {
+    return await FirebaseFirestore.instance.collection("Orders").doc(id).update(
+      {"Status": "Delivered"},
+    );
+  }
+
+  Future updateUserOrders(String userid, String docid) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userid)
+        .collection("Orders")
+        .doc(docid)
+        .update({"Status": "Delivered"});
+  }
 }
