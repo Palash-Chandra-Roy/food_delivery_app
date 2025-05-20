@@ -21,6 +21,9 @@ class _SingupState extends State<Singup> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  // var isCheck = false.obs;
+  bool obscureText = true;
+
   // final AuthController authController = Get.find<AuthController>();
   void registration() async {
     if (password.isNotEmpty &&
@@ -178,7 +181,7 @@ class _SingupState extends State<Singup> {
                           color: Color(0xFFececf8),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: TextField(
+                        child: TextFormField(
                           controller: emailController,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -196,13 +199,25 @@ class _SingupState extends State<Singup> {
                           color: Color(0xFFececf8),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: TextField(
+                        child: TextFormField(
                           controller: passwordController,
-                          obscureText: true,
+                          obscureText: obscureText,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter Passwoed",
                             prefixIcon: Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),

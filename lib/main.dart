@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:food_delivery_app/Admin/admin_home.dart';
+import 'package:food_delivery_app/Screen/BotomNavBar/bottom_nav_bar.dart';
 import 'package:food_delivery_app/Service/key.dart';
 import 'package:get/get.dart';
 
@@ -28,11 +28,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AdminHome(),
-      //ManageUser(),
-      //Login(),
-      //OrderDetails(),
-      // BottomNavBar(),
+      home:
+          // AdminLogin(),
+          //AllOrder(),
+          //  AdminHome(),
+          //   ManageUser(),
+          //Login(),
+          //OrderDetails(),
+          BottomNavBar(),
       // HomeScreen(),
       // OnbordingScreen(),
     );

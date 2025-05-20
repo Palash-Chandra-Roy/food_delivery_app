@@ -32,7 +32,7 @@ class DatabaseMethods {
   }
 
   Future<Stream<QuerySnapshot>> getUserOrders(String id) async {
-    return await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
         .doc(id)
         .collection("Orders")
@@ -52,11 +52,14 @@ class DatabaseMethods {
     });
   }
 
-  Future<Stream<QuerySnapshot>> getAdminOrders() async {
-    return await FirebaseFirestore.instance
-        .collection("Orders")
-        .where("Status", isEqualTo: "Pending")
-        .snapshots();
+  // Future<Stream<QuerySnapshot>> getAdminOrders() async {
+  //   return await FirebaseFirestore.instance
+  //       .collection("Orders")
+  //       .where("Status", isEqualTo: "Pending")
+  //       .snapshots();
+  // }
+  Stream<QuerySnapshot> getAdminOrders() {
+    return FirebaseFirestore.instance.collection("Orders").snapshots();
   }
 
   Future updateAdminOrders(String id) async {

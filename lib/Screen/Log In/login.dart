@@ -18,6 +18,7 @@ class _LoginState extends State<Login> {
   String? email = "", password = "";
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  bool obscureText = true;
 
   void uaerLogin() async {
     try {
@@ -149,13 +150,25 @@ class _LoginState extends State<Login> {
                           color: Color(0xFFececf8),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: TextField(
+                        child: TextFormField(
                           controller: passwordController,
-                          obscureText: true,
+                          obscureText: obscureText,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter Passwoed",
                             prefixIcon: Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),
